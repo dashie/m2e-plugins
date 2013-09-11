@@ -175,6 +175,7 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 				}
 				log.debug("check workspace bundle: {}", shortArtifactKey);
 
+				// TODO visits only exported resources
 				IPath path = mavenProject.getOutputLocation();
 				IFolder outputLocation = workspace.getRoot().getFolder(path);
 				CheckLastModifiedVisitor visitor = new CheckLastModifiedVisitor(lastModified);
