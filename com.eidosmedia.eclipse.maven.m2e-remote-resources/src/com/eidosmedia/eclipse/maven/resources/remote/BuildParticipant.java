@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.Scanner;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -83,6 +85,10 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 		final BuildContext buildContext = getBuildContext();
 		final IMavenProjectRegistry projectRegistry = MavenPlugin.getMavenProjectRegistry();
 
+		ArtifactKey artifactKey = currentProject.getArtifactKey();
+		String shortArtifactKey = artifactKey.getGroupId() + ":" + artifactKey.getArtifactId() + ":" + artifactKey.getVersion();
+		log.debug("artifact key: {}", shortArtifactKey);
+
 		File resourcesDirectory = maven.getMojoParameterValue(getSession(), getMojoExecution(), "resourcesDirectory", File.class);
 		File outputDirectory = maven.getMojoParameterValue(getSession(), getMojoExecution(), "outputDirectory", File.class);
 		File remoteResourcesDescriptor = new File(outputDirectory, "META-INF/maven/remote-resources.xml");
@@ -123,10 +129,32 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 			if (plugin == null) {
 				continue;
 			}
-			// TODO check execution
-			IProject project = mavenProjectFacade.getProject();
-			log.debug("build project {}", project);
-			rebuilProject(project);
+			boolean rebuild = false;
+			Xpp3Dom pluginConf = (Xpp3Dom) plugin.getConfiguration();
+			List<PluginExecution> executions = plugin.getExecutions();
+			for (PluginExecution execution : executions) {
+				List<String> goals = execution.getGoals();
+				if (goals.contains("process")) {
+					Xpp3Dom executionConf = (Xpp3Dom) execution.getConfiguration();
+					Xpp3Dom configuration = Xpp3Dom.mergeXpp3Dom(executionConf, pluginConf);
+					Xpp3Dom resourceBundlesNode = configuration.getChild("resourceBundles");
+					if (resourceBundlesNode != null) {
+						Xpp3Dom[] resourceBundles = resourceBundlesNode.getChildren("resourceBundle");
+						for (Xpp3Dom resourceBundle : resourceBundles) {
+							String bundleKey = resourceBundle.getValue();
+							if (shortArtifactKey.equals(bundleKey)) {
+								rebuild = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+			if (rebuild) {
+				IProject project = mavenProjectFacade.getProject();
+				log.debug("build project {}", project);
+				rebuilProject(project);
+			}
 		}
 
 		return result;
