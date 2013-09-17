@@ -12,5 +12,23 @@
    <extension
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.m2e.core.preferences.Maven2PreferencePage"
+            class="com.eidosmedia.eclipse.maven.resources.remote.PreferencePage"
+            id="com.eidosmedia.eclipse.maven.resources.remote.PreferencePage"
+            name="Remote Resources Plugin">
+         <keywordReference
+               id="com.eidosmedia.eclipse.maven.resources.remote">
+         </keywordReference>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.eidosmedia.eclipse.maven.resources.remote.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

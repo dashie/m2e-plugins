@@ -24,7 +24,6 @@ public class CheckLastModifiedVisitor implements IResourceProxyVisitor {
 
 	@Override
 	public boolean visit(IResourceProxy proxy) throws CoreException {
-		System.out.println(" >> visit >> " + proxy.requestFullPath());
 		if (terminated) {
 			return false;
 		}

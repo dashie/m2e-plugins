@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.ArtifactKey;
 import org.eclipse.m2e.core.embedder.IMaven;
@@ -98,10 +99,18 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 				log.debug("scan resources {}", resourcesDirectory);
 				Scanner ds = buildContext.newScanner(resourcesDirectory);
 				ds.scan();
-				String[] includedFiles = ds.getIncludedFiles();
-				if (includedFiles == null || includedFiles.length <= 0) {
+				String[] files = ds.getIncludedFiles();
+				if (files == null || files.length <= 0) {
 					log.debug("build check: no resource changes");
-					return null;
+					log.debug("scan deleted resources {}", resourcesDirectory);
+					ds = buildContext.newDeleteScanner(resourcesDirectory);
+					ds.scan();
+					files = ds.getIncludedFiles();
+					if (files == null || files.length <= 0) {
+						return null;
+					} else {
+						log.debug("build check: resources deleted");
+					}
 				} else {
 					log.debug("build check: resources changed");
 				}
@@ -185,6 +194,7 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 		}
 
 		File outputDirectory = maven.getMojoParameterValue(getSession(), getMojoExecution(), "outputDirectory", File.class);
+
 		long lastModified = (outputDirectory.lastModified() / 1000) * 1000; // remove millis part
 
 		if (buildContext.isIncremental()) {
@@ -219,7 +229,44 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 			}
 		}
 
+		boolean cleanDestinationFolder = false;
+		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		if (preferenceStore != null && preferenceStore.getBoolean(PreferenceConstants.P_CLEAN_DESTINATION_FOLDER)) {
+			log.debug("cleanDestinationFolder option is active");
+			final MavenProject mavenProject = currentProject.getMavenProject();
+			String buildDirectoryPath = mavenProject.getBuild().getDirectory() + "/";
+			String outputDirectoryPath = outputDirectory.getCanonicalPath();
+			if (outputDirectoryPath.startsWith(buildDirectoryPath)) {
+				boolean enableClean = false;
+				Xpp3Dom conf = getMojoExecution().getConfiguration();
+				if (conf != null) {
+					conf = conf.getChild("properties");
+					if (conf != null) {
+						conf = conf.getChild("cleanOutputDirectory");
+						if (conf != null && "true".equalsIgnoreCase(conf.getValue())) {
+							enableClean = true;
+						}
+					}
+				}
+				if (enableClean) {
+					cleanDestinationFolder = true;
+				} else {
+					log.warn("cleanOutputDirectory not enable");
+				}
+			} else {
+				log.warn("output directory path is not under 'target' folder, clean ignored");
+			}
+		}
+
+		if (cleanDestinationFolder) {
+			log.debug("clean destination folder");
+			delete(outputDirectory, false);
+		}
+
+		log.debug("do mojo...");
 		final Set<IProject> result = super.build(kind, monitor);
+
+		log.debug("update destination folder timestamp");
 		outputDirectory.setLastModified(System.currentTimeMillis()); // touch output folder
 
 		log.debug("output resources: {}", outputDirectory);
@@ -250,4 +297,19 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 		job.schedule();
 	}
 
+	/**
+	 * 
+	 * @param file
+	 */
+	private void delete(File file, boolean deleteParent) {
+		File[] children = file.listFiles();
+		if (children != null) {
+			for (File child : children) {
+				delete(child, true);
+			}
+		}
+		if (deleteParent) {
+			file.delete();
+		}
+	}
 }
