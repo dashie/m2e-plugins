@@ -178,7 +178,7 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		List<String> bundles = maven.getMojoParameterValue(getSession(), getMojoExecution(), "resourceBundles", List.class);
-		Set<String> bundleSet = new HashSet<>(bundles.size());
+		Set<String> bundleSet = new HashSet<String>(bundles.size());
 		for (String bundle : bundles) {
 			log.debug("remote bundle: {}" + bundle);
 			bundleSet.add(bundle);
