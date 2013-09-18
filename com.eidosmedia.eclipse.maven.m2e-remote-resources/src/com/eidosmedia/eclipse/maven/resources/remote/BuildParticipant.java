@@ -134,6 +134,10 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 				continue;
 			}
 			MavenProject mavenProject = mavenProjectFacade.getMavenProject();
+			if (mavenProject == null) {
+				log.warn("cast to maven project error: {}", mavenProjectFacade.getFullPath());
+				continue;
+			}
 			Plugin plugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-remote-resources-plugin");
 			if (plugin == null) {
 				continue;
@@ -234,7 +238,7 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 		if (preferenceStore != null && preferenceStore.getBoolean(PreferenceConstants.P_CLEAN_DESTINATION_FOLDER)) {
 			log.debug("cleanDestinationFolder option is active");
 			final MavenProject mavenProject = currentProject.getMavenProject();
-			String buildDirectoryPath = mavenProject.getBuild().getDirectory() + "/";
+			String buildDirectoryPath = mavenProject.getBuild().getDirectory() + File.separatorChar;
 			String outputDirectoryPath = outputDirectory.getCanonicalPath();
 			if (outputDirectoryPath.startsWith(buildDirectoryPath)) {
 				boolean enableClean = false;
