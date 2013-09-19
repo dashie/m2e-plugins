@@ -4,7 +4,7 @@
 			<pluginExecutionFilter>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-remote-resources-plugin</artifactId>
-				<versionRange>[1.0,)</versionRange>
+				<versionRange>[1.6,)</versionRange>
 				<goals>
 					<goal>bundle</goal>
 					<goal>process</goal>

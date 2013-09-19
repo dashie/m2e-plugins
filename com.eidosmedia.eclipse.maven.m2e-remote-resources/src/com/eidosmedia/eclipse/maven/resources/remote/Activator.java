@@ -10,6 +10,12 @@ public class Activator extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "com.eidosmedia.eclipse.maven.m2e-remote-resources"; //$NON-NLS-1$
 
+	public static final String MAVEN_GROUP_ID = "org.apache.maven.plugins"; //$NON-NLS-1$
+
+	public static final String MAVEN_ARTIFACT_ID = "maven-remote-resources-plugin"; //$NON-NLS-1$
+
+	public static final String MAVEN_ID = MAVEN_GROUP_ID + ":" + MAVEN_ARTIFACT_ID; //$NON-NLS-1$
+
 	private static Activator plugin;
 
 	public Activator() {
