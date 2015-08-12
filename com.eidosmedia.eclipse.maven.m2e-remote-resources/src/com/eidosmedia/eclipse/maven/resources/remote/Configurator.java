@@ -62,9 +62,14 @@ public class Configurator extends AbstractProjectConfigurator {
 			if (pi.equals(project)) {
 				continue;
 			}
-			MavenProject mp = facade.getMavenProject();
-			if (addToReferences(mp, bundleSet)) {
-				refs.add(pi);
+			MavenProject mp = facade.getMavenProject(null);
+			if (mp == null) {
+				log.error("configure: [" + project + "] maven project reference is null " + pi);
+			} else {
+				if (addToReferences(mp, bundleSet)) {
+					log.info("configure: [" + project + "] add maven project reference to " + pi);
+					refs.add(pi);
+				}
 			}
 		}
 

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: m2e-remote-resources
 Bundle-SymbolicName: com.eidosmedia.eclipse.maven.m2e-remote-resources;singleton:=true
-Bundle-Version: 1.0.2.0-SNAPSHOT
+Bundle-Version: 1.0.3.0-SNAPSHOT
 Bundle-Activator: com.eidosmedia.eclipse.maven.resources.remote.Activator
 Bundle-Vendor: EidosMedia S.p.A.
 Require-Bundle: org.slf4j.api;bundle-version="1.7.0",

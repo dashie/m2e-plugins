@@ -9,6 +9,9 @@ import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 
+/**
+ *
+ */
 public class Configurator extends AbstractProjectConfigurator {
 
 	public Configurator() {
@@ -22,7 +25,6 @@ public class Configurator extends AbstractProjectConfigurator {
 
 	@Override
 	public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution, IPluginExecutionMetadata executionMetadata) {
-
 		return new BuildParticipant(execution);
 	}
 }
