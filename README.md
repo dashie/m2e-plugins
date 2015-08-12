@@ -1,4 +1,11 @@
-m2e-remote-resources
+m2e-plugins
 ====================
 
-Apache maven-remote-resources-plugin extension
+Extension for m2e
+
+ - maven-remote-resources-plugin
+ - yuicompressor-maven-plugin
+
+Maven
+
+ - maven-remote-resources-plugin 1.6 patched version
