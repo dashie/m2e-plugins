@@ -15,5 +15,20 @@
 				</configurator>
 			</action>
 		</pluginExecution>
+		<pluginExecution>
+			<pluginExecutionFilter>
+				<groupId>org.jasig.maven</groupId>
+				<artifactId>sass-maven-plugin</artifactId>
+				<versionRange>[0.1.1,)</versionRange>
+				<goals>
+					<goal>update-stylesheets</goal>
+				</goals>
+			</pluginExecutionFilter>
+			<action>
+				<configurator>
+					<id>com.eidosmedia.eclipse.maven.libsass.Configurator</id>
+				</configurator>
+			</action>
+		</pluginExecution>
 	</pluginExecutions>
 </lifecycleMappingMetadata>

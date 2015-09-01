@@ -24,11 +24,16 @@ import org.sonatype.plexus.build.incremental.BuildContext;
  */
 public class BuildParticipant extends MojoExecutionBuildParticipant {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(BuildParticipant.class);
+	private static final Logger log = LoggerFactory.getLogger(BuildParticipant.class);
 
-	public BuildParticipant(MojoExecution execution) {
+	private final String inputPathParam;
+
+	private final String outputPathParam;
+	
+	public BuildParticipant(MojoExecution execution, String inputPathParam,  String outputPathParam) {
 		super(execution, true, true);
+		this.inputPathParam = inputPathParam;
+		this.outputPathParam = outputPathParam;
 	}
 
 	@Override
@@ -50,8 +55,7 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 		final IMaven maven = MavenPlugin.getMaven();
 		final IMavenProjectFacade currentProject = getMavenProjectFacade();
 		final BuildContext buildContext = getBuildContext();
-		final IMavenProjectRegistry projectRegistry = MavenPlugin
-				.getMavenProjectRegistry();
+		final IMavenProjectRegistry projectRegistry = MavenPlugin.getMavenProjectRegistry();
 
 		ArtifactKey artifactKey = currentProject.getArtifactKey();
 		String shortArtifactKey = artifactKey.getGroupId() + ":"
@@ -61,7 +65,8 @@ public class BuildParticipant extends MojoExecutionBuildParticipant {
 		MavenProject mavenProject = currentProject.getMavenProject();
 		// File basedir = mavenProject.getBasedir();
 		// File inputPath = new File(basedir, "src");
-		File inputPath = maven.getMojoParameterValue(mavenProject, mojoExecution, "inputPath", File.class, monitor);
+		File inputPath = maven.getMojoParameterValue(mavenProject, mojoExecution, inputPathParam, File.class, monitor);
+		
 		String outputDirectoryPath = mavenProject.getBuild().getDirectory();
 		File outputDirectory = new File(outputDirectoryPath);
 
