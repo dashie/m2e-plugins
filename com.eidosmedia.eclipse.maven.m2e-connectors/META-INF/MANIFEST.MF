@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: m2e-connectors
+Bundle-SymbolicName: com.eidosmedia.eclipse.maven.m2e-connectors;singleton:=true
+Bundle-Version: 1.0.0.0-SNAPSHOT
+Bundle-Activator: com.eidosmedia.eclipse.maven.connectors.Activator
+Bundle-Vendor: EidosMedia S.p.A.
+Require-Bundle: org.slf4j.api;bundle-version="1.7.2",
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.9.1",
+ org.eclipse.m2e.core;bundle-version="1.5.1",
+ org.eclipse.m2e.maven.runtime;bundle-version="1.5.1",
+ org.eclipse.m2e.jdt;bundle-version="1.5.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
