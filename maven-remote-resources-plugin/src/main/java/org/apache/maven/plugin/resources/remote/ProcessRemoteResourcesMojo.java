@@ -320,7 +320,15 @@ public class ProcessRemoteResourcesMojo
      */
     @Parameter( defaultValue = "${project.resources}", readonly = true, required = true )
     private List<Resource> resources;
-
+    
+    /**
+     * Whether to include properties defined in the project when filtering resources.
+     *
+     * @since 1.2
+     */
+    @Parameter( defaultValue = "false" )
+    protected boolean cleanOutputDirectory = false;
+    
     /**
      * Artifact Resolver, needed to resolve and download the {@code resourceBundles}.
      */
